@@ -38,9 +38,7 @@ class DeckClass:
 
     def __init__(self):
         self.all_cards = []
-        for suit in suits:
-            for rank in ranks:
-                self.all_cards.append(CardClass(suit, rank))
+        self.all_cards = [CardClass(suit, rank) for suit in suits for tank in ranks]
 
     def shuffle(self):
         random.shuffle(self.all_cards)
@@ -64,12 +62,12 @@ class PlayerClass:
     def get(self, card):
         self.hand.append(card)
         self.score += card.value
-
-        if self.score > 21:
-            for card in self.hand:
-                if card.rank == 'Ace':
-                    card.rank = 'Ace*'
-                    self.score -= 10
+        hand_aces = [card for card in self.hand if card.rank == 'Ace']
+        
+        if self.score > 21 and hand_aces:
+            for ace in hand_aces:
+                ace.rank = 'Ace*'
+                self.score -= 10
 
     def money_transfer(self, amount):
         self.bank += amount
@@ -106,8 +104,7 @@ class PlayerClass:
         representation = f"{self.name} Hand:"
         for card in self.hand:
             representation += f"\n{card}"
-        representation += f"\nScore: {self.score}"
-        representation += f"\n"
+        representation += f"\nScore: {self.score}\n"
         return representation
 
 
